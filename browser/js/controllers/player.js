@@ -5,22 +5,25 @@ app.controller('PlayerCtrl', function($scope, $rootScope, PlayerFactory){
     $scope.next();
   });
 
-  audio.addEventListener('timeupdate', function () {
+  $scope.progress = PlayerFactory.getProgress();
+
+  audio.addEventListener('playing', function () {
     $scope.progress = 100 * audio.currentTime / audio.duration;
     $scope.$digest();
   });
 
+  
   // state variables
   $scope.currentSong = PlayerFactory.getCurrentSong;
   $scope.playing = PlayerFactory.isPlaying;
 
   
   // main toggle
-  $scope.toggle = function (song) {
-    console.log(song)
-    if ($scope.playing) $rootScope.$broadcast('pause');
-    else $rootScope.$broadcast('play', song);
-  }
+  // $scope.toggle = function (song) {
+    
+  //   if ($scope.playing) $rootScope.$broadcast('pause');
+  //   else $rootScope.$broadcast('play', song);
+  // }
 
   // incoming events (from Album or toggle)
   $scope.$on('pause', PlayerFactory.pause);

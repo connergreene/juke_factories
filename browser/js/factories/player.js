@@ -1,4 +1,4 @@
-app.factory('PlayerFactory', function($q){
+app.factory('PlayerFactory', function($rootScope){
     var audio = document.createElement('audio');
 
     var playerObj = {};
@@ -10,6 +10,8 @@ app.factory('PlayerFactory', function($q){
     var previousIndex;
     var currentIndex;
     var nextIndex;
+
+    var progress = 0;
 
     playerObj.pause = function () {
       audio.pause();
@@ -60,14 +62,17 @@ app.factory('PlayerFactory', function($q){
       previousIndex = currentIndex - 1;
       if (previousIndex < 0) {
         currentIndex = songList.songs.length-1;
+        currentSong = songList.songs[currentIndex];
       }
-      currentSong = songList.songs[currentIndex];
-      console.log(currentSong);
+      else{
+        currentSong = songList.songs[previousIndex];
+      }
       playerObj.start(currentSong);
     };
 
     playerObj.getProgress = function () {
-    
+      console.log(progress);
+      return progress;
     };
 
     return playerObj;

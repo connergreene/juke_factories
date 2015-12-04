@@ -1,37 +1,75 @@
-
 app.factory('PlayerFactory', function($q){
-    // functionality
+    var audio = document.createElement('audio');
 
-  var playerObj = {};
+    var playerObj = {};
 
-  playerObj.printThis = function(){
-    console.log("Hello");
-  }
-  playerObj.pause = function () {
-    audio.pause();
-    $scope.playing = false;
-  }
-  // playerObj.play = function (event, song){
-  //   // stop existing audio (e.g. other song) in any case
-  //   pause();
-  //   $scope.playing = true;
-  //   // resume current song
-  //   if (song === $scope.currentSong) return audio.play();
-  //   // enable loading new song
-  //   $scope.currentSong = song;
-  //   audio.src = song.audioUrl;
-  //   audio.load();
-  //   audio.play();
-  // }
+    var playing = false;
+    var currentSong = null;
+    var songList;
 
-  // // outgoing events (to Album)
-  // playerObj.next = function(){ $rootScope.$broadcast('next'); };
-  // playerObj.prev = function(){ $rootScope.$broadcast('prev'); };
+    var previousIndex;
+    var currentIndex;
+    var nextIndex;
 
-  return playerObj;
+    playerObj.pause = function () {
+      audio.pause();
+      playing = false;
+    }
+
+    playerObj.start = function (song, songs){
+      // stop existing audio (e.g. other song) in any case
+      playerObj.pause();
+      playing = true;
+      // resume current song
+      if (song === currentSong) {
+        return audio.play();
+      }
+      // enable loading new song
+      currentSong = song;
+      audio.src = song.audioUrl;
+      audio.load();
+      audio.play();
+      songList = songs;
+    }
+
+    playerObj.resume = function () {
+      playing = true;
+      audio.play();
+    }
+
+    playerObj.isPlaying = function () {
+      return playing;
+    }
+
+    playerObj.getCurrentSong = function () {
+      return currentSong;
+    }
+
+    playerObj.next = function () {
+      currentIndex = songList.songs.indexOf(currentSong);
+      nextIndex = currentIndex + 1;
+      if (currentIndex >= songList.songs.length-1) {
+        nextIndex = 0;
+      }
+      currentSong = songList.songs[nextIndex];
+      playerObj.start(currentSong);
+    };
+
+    playerObj.previous = function () {
+      currentIndex = songList.songs.indexOf(currentSong);
+      previousIndex = currentIndex - 1;
+      if (previousIndex < 0) {
+        currentIndex = songList.songs.length-1;
+      }
+      currentSong = songList.songs[currentIndex];
+      console.log(currentSong);
+      playerObj.start(currentSong);
+    };
+
+    playerObj.getProgress = function () {
+    
+    };
+
+    return playerObj;
+
 });
-
-
-
-
-
